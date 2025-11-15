@@ -1,40 +1,15 @@
+require("dotenv").config();
+const { Client, GatewayIntentBits } = require("discord.js");
 
-const { Client, GatewayIntentBits, Partials, PermissionsBitField } = require("discord.js");
 const client = new Client({
-    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
-    partials: [Partials.Channel]
+    intents: [GatewayIntentBits.Guilds]
 });
 
-// -------------------- CONFIG --------------------
-const ACCESS_ROLE = "1439233827733110915";
-const EVENT_ROLE = "1250870362565251123";
-// ------------------------------------------------
-
-client.on("ready", () => {
-    console.log(`Bot logged in as ${client.user.tag}`);
+client.once("ready", () => {
+    console.log("Bot is online");
 });
 
-client.on("messageCreate", async (msg) => {
-    if (!msg.guild || msg.author.bot) return;
-    if (!msg.member.roles.cache.has(ACCESS_ROLE)) return; // Only access role
-
-    const args = msg.content.split(" ");
-    const cmd = args.shift()?.toLowerCase();
-
-    const eventRole = msg.guild.roles.cache.get(EVENT_ROLE);
-    if (!eventRole) return msg.reply("Event Winner role not found!");
-
-    if (cmd === ".ek") {
-        const sub = args[0];
-
-        // rename
-        if (sub === "rename") {
-            const newName = args.slice(1).join(" ");
-            if (!newName) return msg.reply("Please provide a new name!");
-            await eventRole.setName(newName);
-            return msg.reply(`✅ Your role has been renamed to **${newName}**`);
-        }
-
+client.login(process.env.TOKEN);
         // color
         if (sub === "color") {
             const color = args[1];
